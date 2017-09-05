@@ -1,0 +1,60 @@
+<!-- author http://twitter.com/superpikar -->
+<App>
+	<JavaScript File="./MainView.js" />
+
+	<iOS.StatusBarConfig Style="Light" Animation="Slide" IsVisible="True" />
+
+	<ClientPanel>
+		<Container ux:Class="PageWithTitle" ux:Name="self" HitTestMode="LocalBoundsAndChildren" Subtree="innerPanel">
+			<float4 ux:Property="HeaderColor" />
+			<float4 ux:Property="HeaderTextColor" />
+			<string ux:Property="Instructions" />
+			<string ux:Property="Title" />
+			<Android.StatusBarConfig Color="{Property self.HeaderColor}" IsVisible="True" />
+
+			<DockPanel ux:Binding="Children">
+				<StackPanel Dock="Top">
+					<Panel Color="{Property self.HeaderColor}" Height="45">
+						<Text Value="{Property self.Title}" FontSize="22"
+								Alignment="Center" TextColor="{Property self.HeaderTextColor}"/>
+					</Panel>
+				</StackPanel>
+				<Panel ux:Name="innerPanel" />
+				<Panel Height="10%" Color="#0008" Dock="Bottom">
+					<WhileActive Invert="true" Threshold="0.4">
+						<Move RelativeTo="Size" Y="1" Duration="0.4" Easing="CircularInOut"/>
+					</WhileActive>
+					<Text Value="{Property self.Instructions}" Margin="20" TextColor="#fff" Alignment="Center" />
+				</Panel>			
+			</DockPanel>
+		</Container>
+
+		<Text ux:Class="SubTitle" Margin="0,20,0,5" FontSize="18" />
+
+		<Page>
+			<PageWithTitle Title="Weather App" HeaderColor="#595FFF" HeaderTextColor="#fff"
+								Color="#FEFDFC" Instructions="Retrieve from https://openweathermap.org/">
+				<StackPanel Padding="20">
+					<DockPanel>
+						<StackPanel Padding="0,0,20,0">
+							<SubTitle>Location</SubTitle>
+							<Text FontSize="24" Value="{location.address}" TextWrapping="Wrap"/>
+							<Text Value="lat: {location.latitude} | lng: {location.longitude}" />
+						</StackPanel>
+						<Rectangle Color="#595" Tapped="{detectCurrentLocation}" Dock="Right" Height="40" Padding="10" Alignment="Center" CornerRadius="5">
+							<Text Color="#fff">Locate</Text>
+						</Rectangle>
+					</DockPanel>
+					<SubTitle>Weather</SubTitle>
+					<Text Value="Temperature: {weatherData.main.temp} °F"/>
+					<Text Value="Pressure: {weatherData.main.pressure}"/>
+					<Text Value="Humidity: {weatherData.main.humidity}"/>
+					<SubTitle>Wind</SubTitle>
+					<Text Value="Speed: {weatherData.wind.speed}"/>
+					<Text Value="Degree: {weatherData.wind.deg}"/>
+				</StackPanel>
+			</PageWithTitle>
+		</Page>
+	</ClientPanel>
+</App>
+
