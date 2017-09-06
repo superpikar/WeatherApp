@@ -3,6 +3,8 @@ const GeoLocation = require("FuseJS/GeoLocation");
 
 const weatherData = Observable();
 const location = Observable();
+const errorMessage = Observable();
+const isLoading = Observable(false);
 
 function initializeData() {
   location.value = {
@@ -22,6 +24,8 @@ function initializeData() {
       deg: 0,
     }
   }
+  isLoading.value = false;
+  errorMessage.clear();
 }
 
 function getCurrentWeather(lat, lng) {
@@ -31,6 +35,11 @@ function getCurrentWeather(lat, lng) {
     })
     .then(function(responseObject) {
       weatherData.value = responseObject;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      errorMessage.add(`Can't get weather data. No internet connection.`);
+      isLoading.value = false;
     });
 }
 
@@ -45,12 +54,18 @@ function geoCoding(lat, lng) {
       });
       console.log(JSON.stringify(loc))
       location.value = loc;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      isLoading.value = false;
+      errorMessage.add(`Can't locate address. No internet connection.`);
     });
 }
 
 function detectCurrentLocation() {
   initializeData();
-  const TIMEOUT = 5000;
+  isLoading.value = true;
+  const TIMEOUT = 4000;
   GeoLocation.getLocation(TIMEOUT).then(function(loc) {
     console.log("getLocation success " + JSON.stringify(loc));
     location.value = loc;
@@ -58,6 +73,8 @@ function detectCurrentLocation() {
     getCurrentWeather(loc.latitude, loc.longitude);
   }).catch(function(fail) {
     console.log("getLocation fail " + fail);
+    isLoading.value = false;
+    errorMessage.add(`Can't detect location. Please turn on your GPS.`);
   });
 }
 
@@ -65,6 +82,8 @@ initializeData();
 
 module.exports = {
   weatherData,
+  isLoading,
+  errorMessage,
   location,
   detectCurrentLocation,
 };

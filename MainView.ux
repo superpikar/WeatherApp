@@ -21,37 +21,65 @@
 				</StackPanel>
 				<Panel ux:Name="innerPanel" />
 				<Panel Height="10%" Color="#0008" Dock="Bottom">
-					<WhileActive Invert="true" Threshold="0.4">
-						<Move RelativeTo="Size" Y="1" Duration="0.4" Easing="CircularInOut"/>
-					</WhileActive>
 					<Text Value="{Property self.Instructions}" Margin="20" TextColor="#fff" Alignment="Center" />
 				</Panel>			
 			</DockPanel>
 		</Container>
 
-		<Text ux:Class="SubTitle" Margin="0,20,0,5" FontSize="18" />
+		<Text ux:Class="SubTitle" FontSize="18" />
+		<StackPanel ux:Class="Box" Margin="0,0,0,20">
+		</StackPanel>
+		<StackPanel ux:Class="BoxError" Margin="0,20" Color="#ffbaba" Padding="20">
+			<AddingAnimation>
+				<Change this.Opacity="0" Duration="0.15" Easing="CubicOut" EasingBack="CubicIn" />
+			</AddingAnimation>
+			<RemovingAnimation>
+				<Change this.Opacity="0" Duration="0.15" Easing="CubicOut" EasingBack="CubicIn" />
+			</RemovingAnimation>
+		</StackPanel>
 
 		<Page>
-			<PageWithTitle Title="Weather App" HeaderColor="#595FFF" HeaderTextColor="#fff"
-								Color="#FEFDFC" Instructions="Retrieve from https://openweathermap.org/">
+			<PageWithTitle Title="Weather App" HeaderColor="#595FFF" HeaderTextColor="#fff"	Color="#FEFDFC" Instructions="Retrieve from https://openweathermap.org/">
 				<StackPanel Padding="20">
-					<DockPanel>
+					<DockPanel Margin="0,0,0,20">
 						<StackPanel Padding="0,0,20,0">
 							<SubTitle>Location</SubTitle>
 							<Text FontSize="24" Value="{location.address}" TextWrapping="Wrap"/>
 							<Text Value="lat: {location.latitude} | lng: {location.longitude}" />
 						</StackPanel>
-						<Rectangle Color="#595" Tapped="{detectCurrentLocation}" Dock="Right" Height="40" Padding="10" Alignment="Center" CornerRadius="5">
-							<Text Color="#fff">Locate</Text>
+						<Rectangle ux:Name="buttonLocate" Color="#595" Dock="Right" Height="40" Padding="10" Alignment="Top" CornerRadius="5" Width="100">
+							<Tapped>
+								<Scale Factor=".7" Duration="0.15" Easing="CubicOut" EasingBack="CubicIn" />
+							</Tapped>
+							<Panel Alignment="Center">
+								<WhileTrue Value="{isLoading}">
+									<Text Color="#fff">...</Text>
+									<Change buttonLocate.Color="#595959" />
+								</WhileTrue>
+								<WhileFalse Value="{isLoading}">
+									<Text Color="#fff" Tapped="{detectCurrentLocation}">Locate</Text>
+								</WhileFalse>
+							</Panel>
 						</Rectangle>
 					</DockPanel>
-					<SubTitle>Weather</SubTitle>
-					<Text Value="Temperature: {weatherData.main.temp} °F"/>
-					<Text Value="Pressure: {weatherData.main.pressure}"/>
-					<Text Value="Humidity: {weatherData.main.humidity}"/>
-					<SubTitle>Wind</SubTitle>
-					<Text Value="Speed: {weatherData.wind.speed}"/>
-					<Text Value="Degree: {weatherData.wind.deg}"/>
+					<Box>
+						<SubTitle>Weather</SubTitle>
+						<Text Value="Temperature: {weatherData.main.temp} °F"/>
+						<Text Value="Pressure: {weatherData.main.pressure}"/>
+						<Text Value="Humidity: {weatherData.main.humidity}"/>
+					</Box>
+					<Box>
+						<SubTitle>Wind</SubTitle>
+						<Text Value="Speed: {weatherData.wind.speed}"/>
+						<Text Value="Degree: {weatherData.wind.deg}"/>
+					</Box>
+					<WhileNotEmpty Items="{errorMessage}">
+						<BoxError>
+							<Each Items="{errorMessage}">
+								<Text Value="{}" TextWrapping="Wrap"/>
+							</Each>
+						</BoxError>
+					</WhileNotEmpty>
 				</StackPanel>
 			</PageWithTitle>
 		</Page>
