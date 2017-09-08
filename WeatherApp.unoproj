@@ -6,7 +6,8 @@
     "Fuse.GeoLocation"
   ],
   "Includes": [
-    "*"
+    "*.ux",
+    "*.js:Bundle"
   ]
 }
 

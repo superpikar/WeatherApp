@@ -44,8 +44,9 @@
 					<DockPanel Margin="0,0,0,20">
 						<StackPanel Padding="0,0,20,0">
 							<SubTitle>Location</SubTitle>
-							<Text FontSize="24" Value="{location.address}" TextWrapping="Wrap"/>
-							<Text Value="lat: {location.latitude} | lng: {location.longitude}" />
+							<Text FontSize="24" Value="{location.city}, {location.country}" TextWrapping="Wrap"/>
+							<Text Value="latitude {location.latitude}" />
+							<Text Value="longitude {location.longitude}" />
 						</StackPanel>
 						<Rectangle ux:Name="buttonLocate" Color="#595" Dock="Right" Height="40" Padding="10" Alignment="Top" CornerRadius="5" Width="100">
 							<Tapped>
@@ -80,6 +81,26 @@
 							</Each>
 						</BoxError>
 					</WhileNotEmpty>
+					<Grid RowCount="1" ColumnCount="5">
+						<Each Items="{forecastDaily}">
+							<StackPanel>
+								<Text Value="{date}" />
+								<Text Value="{weather[0].main}"/>
+								<Text Value="{weather[0].description}" FontSize="8"/>
+								<Text Value="{main.temp} °F" FontSize="12"/>
+							</StackPanel>
+						</Each>
+					</Grid>
+					<Grid RowCount="1" ColumnCount="5">
+						<Each Items="{forecastHourly}">
+							<StackPanel>
+							<Text Value="{date}" />
+								<Text Value="{weather[0].main}"/>
+								<Text Value="{weather[0].description}" FontSize="8"/>
+								<Text Value="{main.temp} °F" FontSize="12"/>
+							</StackPanel>
+						</Each>
+					</Grid>
 				</StackPanel>
 			</PageWithTitle>
 		</Page>

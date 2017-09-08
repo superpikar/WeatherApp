@@ -1,14 +1,19 @@
-const Observable = require("FuseJS/Observable");
-const GeoLocation = require("FuseJS/GeoLocation");
+const Observable = require('FuseJS/Observable');
+const GeoLocation = require('FuseJS/GeoLocation');
+const ApiService = require('./ApiService');
+const CountryService = require('./CountryService');
 
 const weatherData = Observable();
+const forecastDaily = Observable();
+const forecastHourly = Observable();
 const location = Observable();
 const errorMessage = Observable();
 const isLoading = Observable(false);
 
 function initializeData() {
   location.value = {
-    address: '-',
+    city: '-',
+    country: '-',
     latitude: 0,
     longitude: 0,
   };
@@ -29,12 +34,15 @@ function initializeData() {
 }
 
 function getCurrentWeather(lat, lng) {
-  fetch(`http://samples.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=b1b15e88fa797225412429c1c50c122a1`)
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(responseObject) {
-      weatherData.value = responseObject;
+  ApiService.getCurrentWeather(lat, lng)
+    .then((response) => {
+      weatherData.value = response;
+      location.value = {
+        city: response.name,
+        country: CountryService.getCountryName(response.sys.country),
+        latitude: lat,
+        longitude: lng
+      };
       isLoading.value = false;
     })
     .catch((error) => {
@@ -43,45 +51,56 @@ function getCurrentWeather(lat, lng) {
     });
 }
 
-function geoCoding(lat, lng) {
-  fetch(`http://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&sensor=true`)
-    .then(function(response) {
-      return response.json();
+function getWeatherForecast(lat, lng) {
+  isLoading.value = true;
+  ApiService.getWeatherForecast(lat, lng)
+    .then((response) => {
+      forecastDaily.replaceAll(response.listDaily);
+      forecastHourly.replaceAll(response.listHourly);
+      console.log("[getWeatherForecast] - success " + JSON.stringify(response.listDaily.length));
     })
-    .then(function(responseObject) {
-      const loc = Object.assign(location.value, {
-        address: responseObject.results[0].formatted_address,
-      });
-      console.log(JSON.stringify(loc))
-      location.value = loc;
+    .catch(function(fail) {
+      console.log("[getWeatherForecast] - fail " + fail);
+      errorMessage.add(`Can't get weather forecast.`);
       isLoading.value = false;
-    })
-    .catch((error) => {
-      isLoading.value = false;
-      errorMessage.add(`Can't locate address. No internet connection.`);
-    });
+    });;
 }
+
+// function geoCoding(lat, lng) {
+//   ApiService.getLocation(lat, lng).then(function(response) {
+//       location.value = response;
+//       isLoading.value = false;
+//     })
+//     .catch((error) => {
+//       isLoading.value = false;
+//       errorMessage.add(`Can't locate address. No internet connection.`);
+//     });
+// }
 
 function detectCurrentLocation() {
   initializeData();
   isLoading.value = true;
   const TIMEOUT = 4000;
-  GeoLocation.getLocation(TIMEOUT).then(function(loc) {
-    console.log("getLocation success " + JSON.stringify(loc));
-    location.value = loc;
-    geoCoding(loc.latitude, loc.longitude);
-    getCurrentWeather(loc.latitude, loc.longitude);
-  }).catch(function(fail) {
-    console.log("getLocation fail " + fail);
-    isLoading.value = false;
-    errorMessage.add(`Can't detect location. Please turn on your GPS.`);
-  });
+  GeoLocation.getLocation(TIMEOUT)
+    .then(function(loc) {
+      console.log("[getLocation] - success " + JSON.stringify(loc));
+      // geoCoding(loc.latitude, loc.longitude);
+      getCurrentWeather(loc.latitude, loc.longitude);
+      getWeatherForecast(loc.latitude, loc.longitude);
+    })
+    .catch(function(fail) {
+      console.log("[getLocation] - fail " + fail);
+      isLoading.value = false;
+      errorMessage.add(`Can't detect location. Please turn on your GPS.`);
+    });
 }
 
 initializeData();
 
 module.exports = {
   weatherData,
+  forecastDaily,
+  forecastHourly,
   isLoading,
   errorMessage,
   location,
