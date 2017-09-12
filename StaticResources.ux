@@ -7,4 +7,7 @@
   <float4 ux:Global="AlerDarkertColor" ux:Value="#ff7c7c" />
   <float4 ux:Global="DisableColor" ux:Value="#d3d3d3" />
   <float4 ux:Global="BackgroundColor" ux:Value="#ffffff" />
+
+  <FileImageSource ux:Global="IconLocation" File="./Assets/IconLocation.png" />
+  <FileImageSource ux:Global="IconSpinner" File="./Assets/IconSpinner.png" />
 </Panel>

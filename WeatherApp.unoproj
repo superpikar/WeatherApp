@@ -8,6 +8,16 @@
   "Includes": [
     "*.ux",
     "*.js:Bundle"
-  ]
+  ],
+  "Android": {
+    "Icons": {
+      "LDPI": "Assets/AppIcon/mdpi.png",
+      "MDPI": "Assets/AppIcon/mdpi.png",
+      "HDPI": "Assets/AppIcon/hdpi.png",
+      "XHDPI": "Assets/AppIcon/xhdpi.png",
+      "XXHDPI": "Assets/AppIcon/xxhdpi.png",
+      "XXXHDPI": "Assets/AppIcon/xxxhdpi.png",
+    }
+  }
 }
 

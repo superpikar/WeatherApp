@@ -3,6 +3,7 @@ const dateFns = require('./Libs/date_fns');
 const Config = require('./Config');
 
 const API = Config.API;
+const QUERYPARAMS = `appid=${API.OPENWEATHER_KEY}&units=metric`;
 
 /**
  * 
@@ -39,7 +40,7 @@ module.exports = {
    * }
    */
   getCurrentWeather(lat, lng) {
-    return fetch(`${API.OPENWEATHER}/weather?lat=${lat}&lon=${lng}&appid=${API.OPENWEATHER_KEY}`)
+    return fetch(`${API.OPENWEATHER}/weather?${QUERYPARAMS}&lat=${lat}&lon=${lng}`)
       .then((response) => {
         return response.json();
       });
@@ -55,33 +56,31 @@ module.exports = {
    * }
    */
   getWeatherForecast(lat, lng) {
-    const LASTDAILY = 5;
     const LASTHOURLY = 10;
-    const GRIDSIZE = 5;
-    return fetch(`${API.OPENWEATHER}/forecast?lat=${lat}&lon=${lng}&appid=${API.OPENWEATHER_KEY}`)
+    return fetch(`${API.OPENWEATHER}/forecast?${QUERYPARAMS}&lat=${lat}&lon=${lng}`)
       .then((response) => {
         return response.json();
       })
       .then((jsonResponse) => {
 
+        // set hourly data, get only the latest 5
+        let listHourly = _.cloneDeep(jsonResponse.list).filter((val, key) => key < LASTHOURLY).map((val) => {
+          val.date = dateFns.format(new Date(val.dt_txt), 'MM/DD'); // modify date format
+          val.time = dateFns.format(new Date(val.dt_txt), 'HH:mm'); // modify date format
+          return val;
+        });
+
         // grouped to daily data
-        const groupByDay = _.groupBy(jsonResponse.list, (val) => {
+        const groupByDay = _.groupBy(_.cloneDeep(jsonResponse.list), (val) => {
           const theDate = new Date(val.dt_txt);
           return `${theDate.getMonth()+1}/${theDate.getDate()}`;
         });
         // set daily data, get only the latest 5
         let listDaily = _.map(groupByDay, (val, key) => {
           val[0].date = dateFns.format(new Date(val[0].dt_txt), 'MM/DD'); // modify date format
+          val[0].time = '';
           return val[0]; // return the first weather data in a day :P
-        }).filter((val, key) => key < LASTDAILY);
-
-
-        // set hourly data, get only the latest 5
-        let listHourly = jsonResponse.list.filter((val, key) => key < LASTHOURLY).map((val) => {
-          val.date = dateFns.format(new Date(val.dt_txt), 'HH:mm'); // modify date format
-          return val;
         });
-        listHourly = splitArrayPerChunk(listHourly, GRIDSIZE);
 
         console.log(JSON.stringify(`listHourly: ${listHourly.length}`));
         console.log(JSON.stringify(`listDaily: ${listDaily.length}`));

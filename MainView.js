@@ -1,3 +1,4 @@
+const dateFns = require('./Libs/date_fns');
 const Observable = require('FuseJS/Observable');
 const GeoLocation = require('FuseJS/GeoLocation');
 const ApiService = require('./ApiService');
@@ -9,8 +10,10 @@ const forecastHourly = Observable();
 const location = Observable();
 const errorMessage = Observable();
 const isLoading = Observable(false);
+const currentDate = Observable('');
 
 function initializeData() {
+  currentDate.value = dateFns.format(new Date(), 'YYYY/MM/DD')
   location.value = {
     city: '-',
     country: '-',
@@ -98,6 +101,7 @@ function detectCurrentLocation() {
 initializeData();
 
 module.exports = {
+  currentDate,
   weatherData,
   forecastDaily,
   forecastHourly,
