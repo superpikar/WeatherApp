@@ -60,7 +60,6 @@
 			<Text Value="{main.temp} °C" FontSize="12" Alignment="Center"/>
 		</StackPanel>
 
-
 		<PageWithTitle Title="Weather App" HeaderColor="{Resource MainColor}" HeaderTextColor="{Resource BackgroundColor}"	Color="#FEFDFC" Instructions="Retrieve from https://openweathermap.org/">
 			<ScrollView>
 				<StackPanel>
@@ -71,7 +70,7 @@
 								<Text FontSize="24" Value="{location.city}, {location.country}" TextWrapping="Wrap"/>
 								<Text Value="{location.latitude}, {location.longitude}" FontSize="10"/>
 							</StackPanel>
-							<Rectangle ux:Name="buttonLocate" Color="{Resource SecondaryColor}" Dock="Right" Height="40" Padding="10" Alignment="Top" CornerRadius="20">
+							<Rectangle ux:Name="buttonLocate" Color="{Resource MainDarkerColor}" Dock="Right" Height="40" Padding="10" Alignment="Top" CornerRadius="20">
 								<Tapped>
 									<Scale Factor=".9" Duration="0.15" Easing="CubicOut" EasingBack="CubicIn" />
 								</Tapped>
