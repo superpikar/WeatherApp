@@ -4,6 +4,29 @@ const Config = require('./Config');
 
 const API = Config.API;
 
+/**
+ * 
+ * @param Array array of object
+ * @param number numberOfChunk 
+ * @sample
+ * input : 
+ *    array = [1,2,3,4,5,6]
+ *    numberOfChunk = 3
+ * output : 
+ *    [[1,2,3], [4,5,6]]
+ */
+function splitArrayPerChunk(array, numberOfChunk) {
+  let result = [];
+  array.forEach((val, key) => {
+    const index = Math.floor(key / numberOfChunk);
+    if (!result[index]) {
+      result[index] = [];
+    }
+    result[index].push(val);
+  });
+  return Object.values(result);
+}
+
 module.exports = {
   /**
    * get weather forecast by coordinates
@@ -32,6 +55,9 @@ module.exports = {
    * }
    */
   getWeatherForecast(lat, lng) {
+    const LASTDAILY = 5;
+    const LASTHOURLY = 10;
+    const GRIDSIZE = 5;
     return fetch(`${API.OPENWEATHER}/forecast?lat=${lat}&lon=${lng}&appid=${API.OPENWEATHER_KEY}`)
       .then((response) => {
         return response.json();
@@ -44,16 +70,18 @@ module.exports = {
           return `${theDate.getMonth()+1}/${theDate.getDate()}`;
         });
         // set daily data, get only the latest 5
-        const listDaily = _.map(groupByDay, (val, key) => {
+        let listDaily = _.map(groupByDay, (val, key) => {
           val[0].date = dateFns.format(new Date(val[0].dt_txt), 'MM/DD'); // modify date format
           return val[0]; // return the first weather data in a day :P
-        }).filter((val, key) => key < 5);
+        }).filter((val, key) => key < LASTDAILY);
+
 
         // set hourly data, get only the latest 5
-        const listHourly = jsonResponse.list.filter((val, key) => key < 5).map((val) => {
+        let listHourly = jsonResponse.list.filter((val, key) => key < LASTHOURLY).map((val) => {
           val.date = dateFns.format(new Date(val.dt_txt), 'HH:mm'); // modify date format
           return val;
         });
+        listHourly = splitArrayPerChunk(listHourly, GRIDSIZE);
 
         console.log(JSON.stringify(`listHourly: ${listHourly.length}`));
         console.log(JSON.stringify(`listDaily: ${listDaily.length}`));

@@ -14,14 +14,13 @@
 
 			<DockPanel ux:Binding="Children">
 				<StackPanel Dock="Top">
-					<Panel Color="{Property self.HeaderColor}" Height="45">
-						<Text Value="{Property self.Title}" FontSize="22"
-								Alignment="Center" TextColor="{Property self.HeaderTextColor}"/>
+					<Panel Color="{Property self.HeaderColor}" Height="55">
+						<Text Value="{Property self.Title}" FontSize="22"	Alignment="Center" TextColor="{Property self.HeaderTextColor}"/>
 					</Panel>
 				</StackPanel>
 				<Panel ux:Name="innerPanel" />
-				<Panel Height="10%" Color="#0008" Dock="Bottom">
-					<Text Value="{Property self.Instructions}" Margin="20" TextColor="#fff" Alignment="Center" />
+				<Panel Height="30" Color="#0008" Dock="Bottom" Padding="7">
+					<Text Value="{Property self.Instructions}" TextColor="{Resource BackgroundColor}" Alignment="Center" FontSize="10" />
 				</Panel>			
 			</DockPanel>
 		</Container>
@@ -29,7 +28,7 @@
 		<Text ux:Class="SubTitle" FontSize="18" />
 		<StackPanel ux:Class="Box" Margin="0,0,0,20">
 		</StackPanel>
-		<StackPanel ux:Class="BoxError" Margin="0,20" Color="#ffbaba" Padding="20">
+		<StackPanel ux:Class="BoxError" Margin="0,20" Color="{Resource AlertColor}" Padding="20">
 			<AddingAnimation>
 				<Change this.Opacity="0" Duration="0.15" Easing="CubicOut" EasingBack="CubicIn" />
 			</AddingAnimation>
@@ -38,69 +37,104 @@
 			</RemovingAnimation>
 		</StackPanel>
 
+		<Button ux:Class="TabButton" Padding="0,10" Color="{Resource MainColor}" Alignment="Center" Width="100%">
+			<string ux:Property="label" />
+			<Tapped>
+				<Change this.Color="{Resource MainDarkerColor}" Duration="0.15" Easing="CubicOut" EasingBack="CubicIn" />
+			</Tapped>
+			<Text Value="{Property label}" Color="{Resource BackgroundColor}" Alignment="Center"/>
+		</Button>
+
 		<Page>
-			<PageWithTitle Title="Weather App" HeaderColor="#595FFF" HeaderTextColor="#fff"	Color="#FEFDFC" Instructions="Retrieve from https://openweathermap.org/">
-				<StackPanel Padding="20">
-					<DockPanel Margin="0,0,0,20">
-						<StackPanel Padding="0,0,20,0">
-							<SubTitle>Location</SubTitle>
-							<Text FontSize="24" Value="{location.city}, {location.country}" TextWrapping="Wrap"/>
-							<Text Value="latitude {location.latitude}" />
-							<Text Value="longitude {location.longitude}" />
-						</StackPanel>
-						<Rectangle ux:Name="buttonLocate" Color="#595" Dock="Right" Height="40" Padding="10" Alignment="Top" CornerRadius="5" Width="100">
-							<Tapped>
-								<Scale Factor=".7" Duration="0.15" Easing="CubicOut" EasingBack="CubicIn" />
-							</Tapped>
-							<Panel Alignment="Center">
-								<WhileTrue Value="{isLoading}">
-									<Text Color="#fff">...</Text>
-									<Change buttonLocate.Color="#595959" />
-								</WhileTrue>
-								<WhileFalse Value="{isLoading}">
-									<Text Color="#fff" Tapped="{detectCurrentLocation}">Locate</Text>
-								</WhileFalse>
-							</Panel>
-						</Rectangle>
-					</DockPanel>
-					<Box>
-						<SubTitle>Weather</SubTitle>
-						<Text Value="Temperature: {weatherData.main.temp} °F"/>
-						<Text Value="Pressure: {weatherData.main.pressure}"/>
-						<Text Value="Humidity: {weatherData.main.humidity}"/>
-					</Box>
-					<Box>
-						<SubTitle>Wind</SubTitle>
-						<Text Value="Speed: {weatherData.wind.speed}"/>
-						<Text Value="Degree: {weatherData.wind.deg}"/>
-					</Box>
-					<WhileNotEmpty Items="{errorMessage}">
-						<BoxError>
-							<Each Items="{errorMessage}">
-								<Text Value="{}" TextWrapping="Wrap"/>
+			<PageWithTitle Title="Weather App" HeaderColor="{Resource MainColor}" HeaderTextColor="{Resource BackgroundColor}"	Color="#FEFDFC" Instructions="Retrieve from https://openweathermap.org/">
+				<StackPanel>
+					<StackPanel Padding="20">
+						<DockPanel Margin="0,0,0,20">
+							<StackPanel Padding="0,0,20,0">
+								<SubTitle>Location</SubTitle>
+								<Text FontSize="24" Value="{location.city}, {location.country}" TextWrapping="Wrap"/>
+								<Text Value="latitude {location.latitude}" />
+								<Text Value="longitude {location.longitude}" />
+							</StackPanel>
+							<Rectangle ux:Name="buttonLocate" Color="{Resource SecondaryColor}" Dock="Right" Height="40" Padding="10" Alignment="Top" CornerRadius="5" Width="100">
+								<Tapped>
+									<Scale Factor=".9" Duration="0.15" Easing="CubicOut" EasingBack="CubicIn" />
+								</Tapped>
+								<Panel Alignment="Center">
+									<WhileTrue Value="{isLoading}">
+										<Text Alignment="Center" Color="{Resource BackgroundColor}">...</Text>
+										<Change buttonLocate.Color="{Resource DisableColor}" />
+									</WhileTrue>
+									<WhileFalse Value="{isLoading}">
+										<Text Color="{Resource BackgroundColor}" Tapped="{detectCurrentLocation}">Locate</Text>
+									</WhileFalse>
+								</Panel>
+							</Rectangle>
+						</DockPanel>
+						
+						<Image Width="100" Url="http://openweathermap.org/img/w/{weatherData.weather[0].icon}.png"/>
+						<Text Value="{weatherData.weather[0].description}" FontSize="12"/>
+						<Grid RowCount="1" ColumnCount="2">
+							<Box>
+								<SubTitle>Weather</SubTitle>
+								<Text Value="Temp: {weatherData.main.temp} °F"/>
+								<Text Value="Pressure: {weatherData.main.pressure}"/>
+								<Text Value="Humidity: {weatherData.main.humidity}"/>
+							</Box>
+							<Box>
+								<SubTitle>Wind</SubTitle>
+								<Text Value="Speed: {weatherData.wind.speed}"/>
+								<Text Value="Degree: {weatherData.wind.deg}"/>
+							</Box>
+						</Grid>
+						<WhileNotEmpty Items="{errorMessage}">
+							<BoxError>
+								<Each Items="{errorMessage}">
+									<Text Value="{}" TextWrapping="Wrap"/>
+								</Each>
+							</BoxError>
+						</WhileNotEmpty>
+					</StackPanel>
+					<Grid RowCount="1" ColumnCount="2">
+						<TabButton ux:Name="buttonHourly" label="Hourly Forecast">
+							<Clicked>
+                <Set tabs.Active="tabHourly" />
+            	</Clicked>
+						</TabButton>
+						<TabButton ux:Name="buttonDaily" label="Daily Forecast">
+							<Clicked>
+                <Set tabs.Active="tabDaily" />
+            	</Clicked>
+						</TabButton>
+					</Grid>
+					<PageControl ux:Name="tabs" Interaction="None" Active="tabHourly">
+						<PageControl ux:Name="tabHourly">
+							<Each Items="{forecastHourly}">
+								<Grid RowCount="1" ColumnCount="5" Padding="20">
+									<Each Items="{}">
+										<StackPanel>
+										<Text Value="{date}" />
+											<Image Url="http://openweathermap.org/img/w/{weather[0].icon}.png"/>
+											<Text Value="{weather[0].description}" FontSize="8"/>
+											<Text Value="{main.temp} °F" FontSize="12"/>
+										</StackPanel>
+									</Each>
+								</Grid>
 							</Each>
-						</BoxError>
-					</WhileNotEmpty>
-					<Grid RowCount="1" ColumnCount="5">
-						<Each Items="{forecastDaily}">
-							<StackPanel>
-								<Text Value="{date}" />
-								<Text Value="{weather[0].main}"/>
-								<Text Value="{weather[0].description}" FontSize="8"/>
-								<Text Value="{main.temp} °F" FontSize="12"/>
-							</StackPanel>
-						</Each>
-					</Grid>
-					<Grid RowCount="1" ColumnCount="5">
-						<Each Items="{forecastHourly}">
-							<StackPanel>
-							<Text Value="{date}" />
-								<Text Value="{weather[0].main}"/>
-								<Text Value="{weather[0].description}" FontSize="8"/>
-								<Text Value="{main.temp} °F" FontSize="12"/>
-							</StackPanel>
-						</Each>
-					</Grid>
+						</PageControl>
+						<Panel ux:Name="tabDaily">
+							<Grid RowCount="1" ColumnCount="5" Padding="20">
+								<Each Items="{forecastDaily}">
+									<StackPanel>
+										<Text Value="{date}" />
+										<Image Url="http://openweathermap.org/img/w/{weather[0].icon}.png"/>
+										<Text Value="{weather[0].description}" FontSize="8"/>
+										<Text Value="{main.temp} °F" FontSize="12"/>
+									</StackPanel>
+								</Each>
+							</Grid>
+						</Panel>						
+					</PageControl>
 				</StackPanel>
 			</PageWithTitle>
 		</Page>

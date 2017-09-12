@@ -1,0 +1,10 @@
+<Panel ux:Class="StaticResource">
+  <float4 ux:Global="MainColor" ux:Value="#595FFF" />
+  <float4 ux:Global="MainDarkerColor" ux:Value="#3f44bb" />
+  <float4 ux:Global="SecondaryColor" ux:Value="#559955" />
+  <float4 ux:Global="SecondaryDarkerColor" ux:Value="#427242" />
+  <float4 ux:Global="AlertColor" ux:Value="#ffbaba" />
+  <float4 ux:Global="AlerDarkertColor" ux:Value="#ff7c7c" />
+  <float4 ux:Global="DisableColor" ux:Value="#d3d3d3" />
+  <float4 ux:Global="BackgroundColor" ux:Value="#ffffff" />
+</Panel>
