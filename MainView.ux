@@ -44,6 +44,8 @@
 			</Tapped>
 			<Text Value="{Property label}" Color="{Resource BackgroundColor}" Alignment="Center"/>
 		</Button>
+		<Rectangle ux:Class="VerticalDivider" Width="1" Color="{Resource DisableColor}" Margin="0,8" />
+		<Rectangle ux:Class="HorizontalDivider" Height="1" Color="{Resource DisableColor}" Margin="8,0" />
 
 		<Page>
 			<PageWithTitle Title="Weather App" HeaderColor="{Resource MainColor}" HeaderTextColor="{Resource BackgroundColor}"	Color="#FEFDFC" Instructions="Retrieve from https://openweathermap.org/">
@@ -95,12 +97,13 @@
 							</BoxError>
 						</WhileNotEmpty>
 					</StackPanel>
-					<Grid RowCount="1" ColumnCount="2">
+					<Grid Columns="1*, auto, 1*" Color="{Resource MainColor}">
 						<TabButton ux:Name="buttonHourly" label="Hourly Forecast">
 							<Clicked>
                 <Set tabs.Active="tabHourly" />
             	</Clicked>
 						</TabButton>
+						<VerticalDivider Color="{Resource MainDarkerColor}"/>
 						<TabButton ux:Name="buttonDaily" label="Daily Forecast">
 							<Clicked>
                 <Set tabs.Active="tabDaily" />
