@@ -1,5 +1,7 @@
 {
   "RootNamespace":"",
+  "Version": "1.0.0",
+  "VersionCode": 1,
   "Packages": [
     "Fuse",
     "FuseJS",
@@ -10,6 +12,7 @@
     "*.js:Bundle"
   ],
   "Android": {
+    "Package": "com.pikarlabs.weatherapp",
     "Icons": {
       "LDPI": "Assets/AppIcon/mdpi.png",
       "MDPI": "Assets/AppIcon/mdpi.png",
@@ -17,7 +20,13 @@
       "XHDPI": "Assets/AppIcon/xhdpi.png",
       "XXHDPI": "Assets/AppIcon/xxhdpi.png",
       "XXXHDPI": "Assets/AppIcon/xxxhdpi.png",
-    }
+    },
+    "Key": {
+			"Alias": "application",
+			"AliasPassword": "<alias password>",
+			"Store": "release.keystore",
+			"StorePassword": "<store password>"
+		}
   }
 }
 
