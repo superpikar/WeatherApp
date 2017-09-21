@@ -7,5 +7,8 @@ fuse build --target=Android --configuration=Release
 ```
 
 ## Screenshot
-[[https://raw.githubusercontent.com/superpikar/WeatherApp/master/Screenshots/screenshot-v1.0-c.png]]
-[[https://raw.githubusercontent.com/superpikar/WeatherApp/master/Screenshots/screenshot-v1.0-b.png]]
+
+![image](https://raw.githubusercontent.com/superpikar/WeatherApp/master/Screenshots/screenshot-v1.0-b.png)
+
+![image](https://raw.githubusercontent.com/superpikar/WeatherApp/master/Screenshots/screenshot-v1.0-c.png)
+
