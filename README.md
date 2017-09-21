@@ -7,5 +7,5 @@ fuse build --target=Android --configuration=Release
 ```
 
 ## Screenshot
-![screenshot.PNG](./Screenshots/screenshot-v1.0-c.PNG)
-![screenshot.PNG](./Screenshots/screenshot-v1.0-b.PNG)
+![screenshot.PNG](Screenshots/screenshot-v1.0-c.PNG)
+![screenshot.PNG](Screenshots/screenshot-v1.0-b.PNG)
